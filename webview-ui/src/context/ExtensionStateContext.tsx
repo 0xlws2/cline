@@ -33,6 +33,7 @@ import {
 	UiServiceClient,
 } from "../services/grpc-client"
 import { convertTextMateToHljs } from "../utils/textMateToHljs"
+import { isRemoteMode } from "../utils/environment"
 
 interface ExtensionStateContextType extends ExtensionState {
 	didHydrateState: boolean
@@ -255,20 +256,43 @@ export const ExtensionStateContextProvider: React.FC<{
 	}, [])
 	const mcpServersSubscriptionRef = useRef<(() => void) | null>(null)
 	const didBecomeVisibleUnsubscribeRef = useRef<(() => void) | null>(null)
+	// Retry timer for core stream setup (state + init)
+	const coreRetryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-	// Subscribe to state updates and UI events using the gRPC streaming API
-	useEffect(() => {
-		// Use the already defined webview provider type
-		const webviewType = currentProviderType
+	// Helper to schedule a retry without stacking multiple timers
+	const scheduleCoreRetry = useCallback(() => {
+		if (coreRetryTimeoutRef.current) return
+		coreRetryTimeoutRef.current = setTimeout(() => {
+			coreRetryTimeoutRef.current = null
+			setupCoreStreams()
+		}, 3000)
+	}, [])
 
-		// Set up state subscription
+	// Establish core streams required for hydration and initial UI setup
+	const setupCoreStreams = useCallback(() => {
+		// In remote mode, ensure WebSocket is ready; in VS Code mode, proceed immediately
+		if (isRemoteMode) {
+			const ws = (window as any).__remote_websocket__
+			if (!(ws && ws.readyState === WebSocket.OPEN)) {
+				console.debug("[CoreStreams] WebSocket not open yet (remote mode); scheduling retry")
+				scheduleCoreRetry()
+				return
+			}
+		}
+
+		// Tear down previous state subscription if any
+		if (stateSubscriptionRef.current) {
+			stateSubscriptionRef.current()
+			stateSubscriptionRef.current = null
+		}
+
+		// 1) Subscribe to state (drives hydration)
 		stateSubscriptionRef.current = StateServiceClient.subscribeToState(EmptyRequest.create({}), {
 			onResponse: (response) => {
 				if (response.stateJson) {
 					try {
 						const stateData = JSON.parse(response.stateJson) as ExtensionState
 						setState((prevState) => {
-							// Versioning logic for autoApprovalSettings
 							const incomingVersion = stateData.autoApprovalSettings?.version ?? 1
 							const currentVersion = prevState.autoApprovalSettings?.version ?? 1
 							const shouldUpdateAutoApproval = incomingVersion > currentVersion
@@ -280,12 +304,9 @@ export const ExtensionStateContextProvider: React.FC<{
 									: prevState.autoApprovalSettings,
 							}
 
-							// Update welcome screen state based on API configuration
 							setShowWelcome(!newState.welcomeViewCompleted)
 							setDidHydrateState(true)
-
 							console.log("[DEBUG] returning new state in ESC")
-
 							return newState
 						})
 					} catch (error) {
@@ -297,11 +318,33 @@ export const ExtensionStateContextProvider: React.FC<{
 			},
 			onError: (error) => {
 				console.error("Error in state subscription:", error)
+				// Retry core setup on transient backend/bridge failures
+				scheduleCoreRetry()
 			},
 			onComplete: () => {
 				console.log("State subscription completed")
 			},
 		})
+
+		// 2) Initialize webview via gRPC (idempotent)
+		UiServiceClient.initializeWebview(EmptyRequest.create({}))
+			.then(() => {
+				console.log("[DEBUG] Webview initialization completed via gRPC")
+			})
+			.catch((error) => {
+				console.error("Failed to initialize webview via gRPC:", error)
+				// Retry later in case backend wasn't ready yet
+				scheduleCoreRetry()
+			})
+	}, [scheduleCoreRetry, setShowWelcome, setDidHydrateState, setState])
+
+	// Subscribe to state updates and UI events using the gRPC streaming API
+	useEffect(() => {
+		// Use the already defined webview provider type
+		const webviewType = currentProviderType
+
+		// Set up core streams with retry (state + initializeWebview)
+		setupCoreStreams()
 
 		// Subscribe to MCP button clicked events with webview type
 		mcpButtonUnsubscribeRef.current = UiServiceClient.subscribeToMcpButtonClicked(
@@ -500,15 +543,6 @@ export const ExtensionStateContextProvider: React.FC<{
 			},
 		})
 
-		// Initialize webview using gRPC
-		UiServiceClient.initializeWebview(EmptyRequest.create({}))
-			.then(() => {
-				console.log("[DEBUG] Webview initialization completed via gRPC")
-			})
-			.catch((error) => {
-				console.error("Failed to initialize webview via gRPC:", error)
-			})
-
 		// Set up account button clicked subscription
 		accountButtonClickedSubscriptionRef.current = UiServiceClient.subscribeToAccountButtonClicked(EmptyRequest.create(), {
 			onResponse: () => {
@@ -565,6 +599,10 @@ export const ExtensionStateContextProvider: React.FC<{
 
 		// Clean up subscriptions when component unmounts
 		return () => {
+			if (coreRetryTimeoutRef.current) {
+				clearTimeout(coreRetryTimeoutRef.current)
+				coreRetryTimeoutRef.current = null
+			}
 			if (stateSubscriptionRef.current) {
 				stateSubscriptionRef.current()
 				stateSubscriptionRef.current = null

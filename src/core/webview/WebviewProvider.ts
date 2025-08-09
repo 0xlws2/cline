@@ -204,7 +204,8 @@ export abstract class WebviewProvider {
 			<!DOCTYPE html>
 			<html lang="en">
 				<head>
-				<meta charset="utf-8">
+					${process.env.IS_DEV ? '<script src="http://localhost:8097"></script>' : ""}
+					<meta charset="utf-8">
 				<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 				<meta name="theme-color" content="#000000">
 				<link rel="stylesheet" type="text/css" href="${stylesUri}">
@@ -224,7 +225,7 @@ export abstract class WebviewProvider {
                     // Inject the provider type
                     window.WEBVIEW_PROVIDER_TYPE = ${JSON.stringify(this.providerType)};
                     
-                    // Inject the client ID
+						// Inject the client ID
                     window.clineClientId = "${this.clientId}";
                 </script>
 				<script type="module" nonce="${nonce}" src="${scriptUri}"></script>
@@ -316,7 +317,6 @@ export abstract class WebviewProvider {
 			<!DOCTYPE html>
 			<html lang="en">
 				<head>
-					${process.env.IS_DEV ? '<script src="http://localhost:8097"></script>' : ""}
 					<meta charset="utf-8">
 					<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 					<meta http-equiv="Content-Security-Policy" content="${csp.join("; ")}">

@@ -13,7 +13,8 @@ import type { WebviewApi } from "vscode-webview"
 declare global {
 	interface Window {
 		__is_standalone__?: boolean
-		standalonePostMessage?: (event: any) => void
+		standalonePostMessage?: (message: string) => void
+		__remote_websocket__?: WebSocket
 	}
 }
 

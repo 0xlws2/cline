@@ -10,6 +10,8 @@ import { useClineAuth } from "./context/ClineAuthContext"
 import { useExtensionState } from "./context/ExtensionStateContext"
 import { Providers } from "./Providers"
 import { UiServiceClient } from "./services/grpc-client"
+import { initializeRemoteMode } from "./utils/environment"
+import ConnectionStatusDisplay from "./components/remote/ConnectionStatusDisplay"
 
 const AppContent = () => {
 	const {
@@ -50,7 +52,7 @@ const AppContent = () => {
 	}, [shouldShowAnnouncement, setShouldShowAnnouncement, setShowAnnouncement])
 
 	if (!didHydrateState) {
-		return null
+		return <ConnectionStatusDisplay />
 	}
 
 	if (showWelcome) {
@@ -82,6 +84,13 @@ const AppContent = () => {
 }
 
 const App = () => {
+	// Initialize remote mode if we're running standalone
+	useEffect(() => {
+		initializeRemoteMode().catch((error) => {
+			console.error("Failed to initialize remote mode:", error)
+		})
+	}, [])
+
 	return (
 		<Providers>
 			<AppContent />
