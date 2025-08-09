@@ -70,6 +70,7 @@ export default defineConfig({
 	},
 	server: {
 		port: 25463,
+		host: "0.0.0.0", // Allow access from any IP
 		hmr: {
 			host: "localhost",
 			protocol: "ws",

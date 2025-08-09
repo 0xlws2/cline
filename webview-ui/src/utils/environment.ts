@@ -20,9 +20,14 @@ export const isRemoteMode = (() => {
 	// Check if we're explicitly marked as standalone
 	const isStandaloneMarked = typeof window !== "undefined" && window.__is_standalone__
 
-	// Check if we're on localhost (likely remote server)
+	// Check if we're on localhost or local IP (likely remote server)
 	const isLocalhost =
-		typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+		typeof window !== "undefined" &&
+		(window.location.hostname === "localhost" ||
+			window.location.hostname === "127.0.0.1" ||
+			window.location.hostname.match(/^192\.168\./) ||
+			window.location.hostname.match(/^10\./) ||
+			window.location.hostname.match(/^172\.(1[6-9]|2[0-9]|3[01])\./)) // Local network ranges
 
 	return isInBrowser && (isStandaloneMarked || isLocalhost)
 })()

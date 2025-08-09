@@ -5,13 +5,30 @@ import * as grpc from "@grpc/grpc-js"
 import * as protoLoader from "@grpc/proto-loader"
 import path from "path"
 import { fileURLToPath } from "url"
+import { networkInterfaces } from "os"
 
 // Port configuration - hardcoded to match backend
 const WS_PORT = 8081
 const GRPC_SERVER_PORT = 9090
 
+// Get local IP address for network access
+function getLocalIP() {
+	try {
+		const nets = networkInterfaces()
+		for (const name of Object.keys(nets)) {
+			for (const net of nets[name]) {
+				if (net.family === "IPv4" && !net.internal) {
+					return net.address
+				}
+			}
+		}
+	} catch (e) {}
+	return "localhost"
+}
+
+const localIP = getLocalIP()
 console.log(`🔌 Starting WebSocket Server for gRPC Communication`)
-console.log(`   WebSocket: ws://localhost:${WS_PORT}`)
+console.log(`   WebSocket: ws://0.0.0.0:${WS_PORT} (accessible via ws://${localIP}:${WS_PORT})`)
 console.log(`   gRPC Server: localhost:${GRPC_SERVER_PORT}`)
 
 // Resolve repo root for proto files
@@ -74,8 +91,11 @@ function getClient(fullyQualifiedService) {
 // Track active streaming calls for cancellation
 const activeCalls = new Map() // request_id -> call
 
-// Create WebSocket server
-const wss = new WebSocketServer({ port: WS_PORT })
+// Create WebSocket server (bind to all interfaces)
+const wss = new WebSocketServer({
+	port: WS_PORT,
+	host: "0.0.0.0",
+})
 
 wss.on("connection", (ws) => {
 	console.log("🔌 Frontend connected via WebSocket")
