@@ -207,6 +207,24 @@
 				"command": "cline.openWalkthrough",
 				"title": "Open Walkthrough",
 				"category": "Cline"
+			},
+			{
+				"command": "cline.startRemoteServer",
+				"title": "Start Remote Server",
+				"category": "Cline",
+				"icon": "$(server)"
+			},
+			{
+				"command": "cline.stopRemoteServer",
+				"title": "Stop Remote Server",
+				"category": "Cline",
+				"icon": "$(debug-stop)"
+			},
+			{
+				"command": "cline.toggleRemoteServer",
+				"title": "Toggle Remote Server",
+				"category": "Cline",
+				"icon": "$(debug-restart)"
 			}
 		],
 		"keybindings": [

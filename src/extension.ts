@@ -32,6 +32,7 @@ import { AuthService } from "./services/auth/AuthService"
 import { telemetryService } from "./services/posthog/PostHogClientProvider"
 import { SharedUriHandler } from "./services/uri/SharedUriHandler"
 import { ShowMessageType } from "./shared/proto/host/window"
+import { registerRemoteCommands } from "./remote/remote-commands"
 /*
 Built using https://github.com/microsoft/vscode-webview-ui-toolkit
 
@@ -579,6 +580,9 @@ export async function activate(context: vscode.ExtensionContext) {
 			}
 		}),
 	)
+
+	// Register remote server commands
+	registerRemoteCommands(context)
 
 	return createClineAPI(sidebarWebview.controller)
 }

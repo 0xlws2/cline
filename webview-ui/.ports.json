@@ -1,0 +1,5 @@
+{
+	"grpcWebProxyPort": 8080,
+	"grpcServerPort": 9090,
+	"frontendPort": 3001
+}
