@@ -194,3 +194,34 @@ vscode-dropdown::part(listbox) {
 	box-shadow: 0 0 0 0.5px color-mix(in srgb, var(--vscode-focusBorder) 30%, transparent);
 	color: transparent;
 }
+
+/* Loading dots animation */
+.loading-dots {
+	font-family: monospace;
+	color: #888;
+}
+
+.loading-dots span {
+	animation: dot-fade 1.5s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(1) {
+	animation-delay: 0s;
+}
+.loading-dots span:nth-child(2) {
+	animation-delay: 0.4s;
+}
+.loading-dots span:nth-child(3) {
+	animation-delay: 0.8s;
+}
+
+@keyframes dot-fade {
+	0%,
+	66%,
+	100% {
+		opacity: 0.3;
+	}
+	33% {
+		opacity: 1;
+	}
+}
