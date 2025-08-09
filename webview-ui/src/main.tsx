@@ -11,7 +11,12 @@ import "./vscode-theme-fallback.css"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isVSCode = typeof (globalThis as any).acquireVsCodeApi === "function"
 if (!isVSCode) {
+	// Mark as standalone for runtime checks and apply styles
 	document.documentElement.classList.add("standalone")
+	;(window as any).__is_standalone__ = true
+	// Provide a simple, stable client ID so existing subscriptions that expect it can run
+	// Note: future multi-session routing can replace this with a generated per-session ID
+	;(window as any).clineClientId = "standalone"
 }
 
 createRoot(document.getElementById("root")!).render(
