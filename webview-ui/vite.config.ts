@@ -39,6 +39,8 @@ export default defineConfig({
 			reportOnFailure: true,
 		},
 	},
+	// Ensure font assets used by Codicons are treated as static assets
+	assetsInclude: ["**/*.woff", "**/*.woff2", "**/*.ttf"],
 	build: {
 		outDir: "build",
 		reportCompressedSize: false,

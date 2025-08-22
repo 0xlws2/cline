@@ -1,0 +1,179 @@
+/* VS Code CSS variable fallbacks for standalone/dev only.
+   Scoped to the html.standalone element so it does not affect real VS Code.
+   The variables included match actual usages across the codebase.
+*/
+
+html.standalone {
+	/* Typography */
+	--vscode-font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue, Helvetica, Arial, sans-serif;
+	--vscode-font-size: 13px;
+
+	/* Editor/Code fonts - include Azeret Mono for consistency with VS Code */
+	--vscode-editor-font-family: "Azeret Mono", "SF Mono", Monaco, "Cascadia Code", "Fira Code", "Courier New", monospace;
+	--vscode-editor-font-size: 13px;
+	--vscode-editor-line-height: 1.4;
+
+	/* Core foreground/background */
+	--vscode-foreground: #cccccc;
+	--vscode-editor-background: #1e1e1e;
+	--vscode-editor-foreground: #d4d4d4;
+	--vscode-sideBar-background: #252526;
+	--vscode-panel-background: #1e1e1e;
+
+	/* Inputs */
+	--vscode-input-background: #3c3c3c;
+	--vscode-input-foreground: #f0f0f0;
+	--vscode-input-placeholderForeground: #a6a6a6;
+	--vscode-input-border: #454545;
+
+	/* Buttons */
+	--vscode-button-background: #0e639c;
+	--vscode-button-foreground: #ffffff;
+	--vscode-button-hoverBackground: #1177bb;
+
+	/* Focus and borders */
+	--vscode-focusBorder: #0e639c;
+	--vscode-editorWidget-border: #454545;
+	--vscode-sideBar-border: #2c2c2c;
+
+	/* Lists, selections */
+	--vscode-list-activeSelectionBackground: #37373d;
+	--vscode-list-activeSelectionForeground: #ffffff;
+	--vscode-quickInput-background: #252526;
+	--vscode-quickInputList-focusForeground: #ffffff;
+	--vscode-editor-inactiveSelectionBackground: rgba(65, 65, 65, 0.5);
+
+	/* Badges */
+	--vscode-badge-background: #4d4d4d;
+	--vscode-badge-foreground: #ffffff;
+
+	/* Links */
+	--vscode-textLink-foreground: #3794ff;
+
+	/* Scrollbar colors used in index.css */
+	--vscode-scrollbarSlider-background: rgba(121, 121, 121, 0.4);
+	--vscode-scrollbarSlider-hoverBackground: rgba(100, 100, 100, 0.7);
+	--vscode-scrollbarSlider-activeBackground: rgba(191, 191, 191, 0.4);
+
+	/* Diffs (used in some components) */
+	--vscode-diffEditor-removedLineBackground: rgba(255, 0, 0, 0.1);
+	--vscode-diffEditor-insertedLineBackground: rgba(0, 255, 0, 0.1);
+
+	/* Muted/description */
+	--vscode-foreground-muted: #9e9e9e;
+	--vscode-descriptionForeground: #9e9e9e;
+
+	/* Title bar inactive */
+	--vscode-titleBar-inactiveForeground: #9e9e9e;
+
+	/* Additional buttons */
+	--vscode-button-border: #454545;
+	--vscode-button-secondaryBackground: #5a5a5a;
+	--vscode-button-secondaryForeground: #ffffff;
+	--vscode-button-secondaryHoverBackground: #6a6a6a;
+
+	/* Activity warning badge */
+	--vscode-activityWarningBadge-background: #ff6b35;
+
+	/* Banner */
+	--vscode-banner-background: #0e639c;
+
+	/* Charts */
+	--vscode-charts-blue: #007acc;
+	--vscode-charts-green: #89d185;
+	--vscode-charts-yellow: #d7ba7d;
+
+	/* Checkbox */
+	--vscode-checkbox-background: #3c3c3c;
+	--vscode-checkbox-border: #454545;
+	--vscode-checkbox-foreground: #ffffff;
+
+	/* Dropdown */
+	--vscode-dropdown-background: #3c3c3c;
+
+	/* Editor specifics */
+	--vscode-editor-findMatchHighlightBackground: rgba(234, 92, 0, 0.33);
+
+	/* Editor errors and warnings */
+	--vscode-editorError-foreground: #f14c4c;
+	--vscode-editorWarning-foreground: #ffcc02;
+	--vscode-errorForeground: #f14c4c;
+	--vscode-errorForeground-rgb: 241, 76, 76;
+
+	/* Editor widgets */
+	--vscode-editorWidget-background: #252526;
+	--vscode-editorGroup-border: #454545;
+
+	/* Additional diff colors */
+	--vscode-diffEditor-insertedTextBackground: rgba(155, 185, 85, 0.2);
+	--vscode-diffEditor-removedTextBackground: rgba(255, 0, 0, 0.2);
+
+	/* Focus border variations */
+	--vscode-focus-border: var(--vscode-focusBorder);
+
+	/* Icons */
+	--vscode-icon-foreground: #cccccc;
+
+	/* Input validation */
+	--vscode-inputValidation-errorBackground: rgba(244, 71, 71, 0.2);
+
+	/* Lists */
+	--vscode-list-hoverBackground: #2a2d2e;
+	--vscode-quickInputList-focusBackground: #0e639c;
+
+	/* Notifications */
+	--vscode-notificationsInfoIcon-foreground: #3794ff;
+	--vscode-notificationsWarningIcon-foreground: #ffcc02;
+
+	/* Panel */
+	--vscode-panel-border: #454545;
+
+	/* Progress bar */
+	--vscode-progressBar-background: #0e639c;
+
+	/* Sidebar variations */
+	--vscode-sidebar-background: var(--vscode-sideBar-background);
+
+	/* Terminal ANSI colors */
+	--vscode-terminal-ansiBlue: #3794ff;
+	--vscode-terminal-ansiGreen: #89d185;
+	--vscode-terminal-ansiRed: #f14c4c;
+	--vscode-terminal-ansiYellow: #ffcc02;
+
+	/* Testing icons */
+	--vscode-testing-iconFailed: #f14c4c;
+	--vscode-testing-iconPassed: #89d185;
+
+	/* Text formatting */
+	--vscode-textBlockQuote-background: #2a2a2a;
+	--vscode-textBlockQuote-border: #007acc;
+	--vscode-textCodeBlock-background: #2d2d30;
+	--vscode-textPreformat-background: #2d2d30;
+	--vscode-textPreformat-foreground: #d4d4d4;
+	--vscode-textSeparator-foreground: #454545;
+
+	/* Toolbar */
+	--vscode-toolbar-hoverBackground: rgba(90, 93, 94, 0.31);
+
+	/* Widget border */
+	--vscode-widget-border: #454545;
+}
+
+/* Basic page background/foreground for standalone so content is legible */
+html.standalone,
+html.standalone body,
+html.standalone #root {
+	background: var(--vscode-editor-background);
+	color: var(--vscode-editor-foreground);
+	font-family: var(--vscode-font-family);
+	font-size: var(--vscode-font-size);
+}
+
+/* Ensure code elements use proper monospace font in standalone */
+html.standalone pre,
+html.standalone code,
+html.standalone .code-block,
+html.standalone .terminal-output {
+	font-family: var(--vscode-editor-font-family) !important;
+	font-size: var(--vscode-editor-font-size) !important;
+}
